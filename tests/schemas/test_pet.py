@@ -114,7 +114,7 @@ class TestPet:
                        "status": "sold"}
 
         with allure.step('Отправка запрос на обновление данных'):
-            response = requests.post(url=f'{BASE_URL}/pet/{pet_id}', params=payload)
+            response = requests.put(url=f'{BASE_URL}/pet', json=payload)
 
         with allure.step('Проверка параметров питомца в ответе'):
             assert response.status_code == 200, 'Код ошибки не совпал с ожидаемым'
