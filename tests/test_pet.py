@@ -2,6 +2,7 @@ from http.client import responses
 
 import allure
 import jsonschema
+import pytest
 import requests
 from tests.schemas.pet_schema import PET_SCHEMA
 
@@ -38,7 +39,7 @@ class TestPet:
 
     @allure.title('Попытка получить информацию о несуществующем питомце')
     def test_info_unexisting_pet(self):
-        with allure.step('Отправка запроса на получение информации о несуществующем питомца'):
+        with allure.step('Отправка запроса на получение информации о несуществующем питомце'):
             response = requests.get(url=f'{BASE_URL}/pet/9999')
 
         with allure.step('Проверка статуса ответа'):
@@ -138,3 +139,22 @@ class TestPet:
 
         with allure.step('Проверка статуса ответа'):
             assert  response.status_code == 404, 'Код ошибки не совпал с ожидаемым'
+
+    @allure.title('Получение списка питомцев по статусу')
+    @pytest.mark.parametrize(
+        "status, expected_status_code, type_data",
+        [
+            ('available', 200, list),
+            ('pending', 200, list),
+            ('sold', 200, list),
+            ('non_existent_status', 400, dict),
+            ('',400, dict)
+        ]
+    )
+    def test_get_pets_by_status(self, status, expected_status_code, type_data):
+        with allure.step(f'Отправка запроса на получение по статусу {status}'):
+            response = requests.get(url=f'{BASE_URL}/pet/findByStatus', params={'status': status})
+
+        with allure.step('Проверка статуса ответа и формата данных'):
+            assert response.status_code == expected_status_code
+            assert isinstance(response.json(), type_data)
