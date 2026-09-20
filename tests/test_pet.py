@@ -138,7 +138,7 @@ class TestPet:
             response = requests.get(url=f'{BASE_URL}/pet/{pet_id}')
 
         with allure.step('Проверка статуса ответа'):
-            assert  response.status_code == 404, 'Код ошибки не совпал с ожидаемым'
+            assert response.status_code == 404, 'Код ошибки не совпал с ожидаемым'
 
     @allure.title('Получение списка питомцев по статусу')
     @pytest.mark.parametrize(
@@ -148,7 +148,7 @@ class TestPet:
             ('pending', 200, list),
             ('sold', 200, list),
             ('non_existent_status', 400, dict),
-            ('',400, dict)
+            ('', 400, dict)
         ]
     )
     def test_get_pets_by_status(self, status, expected_status_code, type_data):
