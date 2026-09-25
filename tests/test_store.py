@@ -61,7 +61,7 @@ class TestStore:
     @allure.title('Попытка получить информацию о несуществующем заказе')
     def test_get_unexisting_order_by_id(self):
         with allure.step('Отправка запроса на получение информации по ID'):
-            response = requests.get(url=f'{BASE_URL}/store/order/{9999}')
+            response = requests.get(url=f'{BASE_URL}/store/order/9999')
 
         with allure.step('Проверка статуса ответа и данных заказа'):
             assert response.status_code == 404, 'Код ошибки не совпал с ожидаемым'
@@ -75,6 +75,3 @@ class TestStore:
             assert response.status_code == 200, f'Ожидаемый статус 200, получен {response.status_code}'
             response_json = response.json()
             jsonschema.validate(instance=response_json, schema=INVENTORY_SCHEMA)
-            assert isinstance(response_json['approved'], int)
-            assert isinstance(response_json['placed'], int)
-            assert isinstance(response_json['delivered'], int)
